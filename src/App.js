@@ -33,6 +33,10 @@ function App() {
     {
       id: 2,
       name: "chat-2"
+    },
+    {
+      id: 3,
+      name: "chat-3"
     }
   ]);
 
