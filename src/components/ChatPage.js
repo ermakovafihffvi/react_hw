@@ -1,4 +1,4 @@
-import './css/App.css';
+import '../css/App.css';
 import React, { useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import List from '@mui/material/List';
@@ -10,30 +10,33 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import FolderIcon from '@mui/icons-material/Folder';
 import { useParams } from 'react-router-dom';
 
+import { getMessages } from "../redux/reducers/messageReducer/messageSelector";
+import {useDispatch, useSelector} from "react-redux";
+import { ADD_MESSAGE } from "../redux/actionTypes";
+
 function ChatPage() {
-    const [messageList, setMessageList] = React.useState([]);
+    //const [messageList, setMessageList] = React.useState([]);
+    const messageList = useSelector(getMessages);
+    const dispatch = useDispatch();
     const [text, setText] = React.useState('');
     const [author, setAuthor] = React.useState('');
 
     const { id } = useParams();
 
-    useEffect(() => {
+    /*useEffect(() => {
         setTimeout(() => {
           botAnswer()
         }, 2000)
-    }, [messageList]);
+    }, [messageList]);*/
 
     function getId(array) {
         return array.length ? array[array.length - 1].id + 1 : 0;
     }
 
-    function botAnswer() {
+    /*function botAnswer() {
         let lastAuthor = messageList[messageList.length - 1].author;
         if (lastAuthor != "bot") {
             setMessageList(prevState => [
@@ -45,18 +48,19 @@ function ChatPage() {
             }
             ]);
         }
-    }
+    }*/
 
-    const updateMessages = (e) => {
+    const addMessage = (e) => {
         e.preventDefault();
-        setMessageList(prevState => [
-          ...prevState,
-          {
-            id: getId(prevState),
-            text,
-            author
-          }
-        ]);
+        let obj = {
+          id: Math.random(),
+          text,
+          author
+        };
+        dispatch({
+          type: ADD_MESSAGE,
+          payload: obj
+        });
     }
 
     let resultMess = messageList.map(message => {
@@ -94,7 +98,7 @@ function ChatPage() {
               {resultMess}
             </List>
 
-            <Box component="form" onSubmit={updateMessages}
+            <Box component="form" onSubmit={addMessage}
               sx={{
                 '& > :not(style)': { m: 1, width: '25ch'}, marginTop: '50px', display: 'flex', justifyContent: 'center'
               }}
