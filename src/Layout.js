@@ -15,30 +15,21 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import FolderIcon from '@mui/icons-material/Folder';
-import { Routes, Route } from 'react-router-dom';
-import Layout from './Layout';
-import Home from './Home';
-import Profile from './Profile';
-import ChatPage from './ChatPage';
-import NotFound from './NotFound';
+import { NavLink, Outlet } from 'react-router-dom';
 
-const Demo = styled('div')(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-}));
-
-function App() {
-  return (
-    <div className="App">
-      <Routes>
-        <Route path={'/'} element={<Layout/>}>
-          <Route index element={<Home/>}></Route>
-          <Route path={'/profile'} element={<Profile/>}></Route>
-          <Route path={'/chat/:id'} element={<ChatPage/>}></Route>
-        </Route>
-        <Route path={'*'} element={<NotFound/>}></Route>
-      </Routes>
-    </div>
-  );
-}
-
-export default App;
+function Layout() {
+    return (
+      <>
+        <header>
+            <NavLink to={'/'}>Home</NavLink>
+            <NavLink to={'/profile'}>Profile</NavLink>
+        </header>
+        <main>
+            <Outlet/>
+        </main>
+        <footer></footer>
+      </>
+    );
+  }
+  
+  export default Layout;
