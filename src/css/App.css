@@ -1,8 +1,27 @@
 .App {
   text-align: center;
-  background-color: aliceblue;
+  background-color: #f0f8ff;
   padding: 50px;
+  padding-bottom: 0px !important;
   height: 100vh;
+}
+
+.chatList{
+  display: flex;
+  flex-direction: column;
+  min-width: 190px;
+  padding-bottom: 25px;
+}
+
+.inputChat{
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-bottom: 10px !important;
+  max-width: 250px;
+}
+
+.addCircle{
+  margin: 2px auto;
 }
 
 .App-logo {
