@@ -1,123 +1,59 @@
 import '../css/App.css';
 import React, { useEffect } from 'react';
-import { styled } from '@mui/material/styles';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import { useParams } from 'react-router-dom';
 
 import { getMessages } from "../redux/reducers/messageReducer/messageSelector";
 import {useDispatch, useSelector} from "react-redux";
 import { ADD_MESSAGE } from "../redux/actionTypes";
 
+import {getId} from "./getId.js";
+import ChatPagePresent from './ChatPagePresent';
+
 function ChatPage() {
     //const [messageList, setMessageList] = React.useState([]);
-    const messageList = useSelector(getMessages);
+    const { chatId } = useParams();
+    const allmessageList = useSelector(getMessages);
+    const messageList = allmessageList.filter((message) => {
+      if(!chatId) {
+        console.log('null');
+      }
+      //console.log('message.chatId: '+message.chatId);
+      //console.log('chatId: '+chatId);
+      return message.chatId == Number(chatId)
+    });
     const dispatch = useDispatch();
     const [text, setText] = React.useState('');
     const [author, setAuthor] = React.useState('');
 
-    const { id } = useParams();
-
-    /*useEffect(() => {
-        setTimeout(() => {
-          botAnswer()
-        }, 2000)
-    }, [messageList]);*/
-
-    function getId(array) {
-        return array.length ? array[array.length - 1].id + 1 : 0;
-    }
-
-    /*function botAnswer() {
-        let lastAuthor = messageList[messageList.length - 1].author;
-        if (lastAuthor != "bot") {
-            setMessageList(prevState => [
-            ...prevState,
-            {
-                id: getId(prevState),
-                author: 'bot',
-                text: 'сообщение отправлено'
-            }
-            ]);
-        }
-    }*/
-
     const addMessage = (e) => {
+        //console.log('chatId: '+ chatId);
         e.preventDefault();
         let obj = {
-          id: Math.random(),
+          id: getId(allmessageList),
           text,
-          author
+          author,
+          chatId: chatId
         };
+        //console.log(obj);
         dispatch({
           type: ADD_MESSAGE,
-          payload: obj
+          payload: obj,
+          meta: {
+            delay: 2000
+          }
         });
     }
 
-    let resultMess = messageList.map(message => {
-        return (
-          <>
-          <ListItem alignItems="flex-start" key={message.id}>
-            <ListItemAvatar>
-              <Avatar alt="Remy Sharp" src="" />
-            </ListItemAvatar>
-            <ListItemText
-              primary={message.author}
-              secondary={
-                <React.Fragment>
-                  <Typography
-                    sx={{ display: 'inline' }}
-                    component="span"
-                    variant="body2"
-                    color="text.primary"
-                  >
-                  </Typography>
-                  {message.text}
-                </React.Fragment>
-              }
-            />
-          </ListItem>
-          <Divider variant="inset" component="li" />
-          </>
-        )
-    })
-
     return (
-        <Paper sx={{backgroundColor: 'inherit'}}>
-            <h1>{id}</h1>
-            <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', margin: '0 auto'}}>
-              {resultMess}
-            </List>
-
-            <Box component="form" onSubmit={addMessage}
-              sx={{
-                '& > :not(style)': { m: 1, width: '25ch'}, marginTop: '50px', display: 'flex', justifyContent: 'center'
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <div>
-                <TextField autoFocus 
-                  id="outlined-basic" label="Текст сообщения" 
-                  variant="outlined" value={text} onChange={(e) => setText(e.target.value)}/>
-              </div>
-              <div>
-                <TextField 
-                    id="outlined-basic" label="Автор" 
-                    variant="outlined" value={author} onChange={(e) => setAuthor(e.target.value)}/>
-              </div>
-              <button type="submit">Отправить</button>
-            </Box>
-        </Paper>
+      <ChatPagePresent
+        messageList = {messageList}
+        addMessage = {addMessage}
+        chatId = {chatId}
+        setAuthor = {setAuthor}
+        author = {author}
+        setText = {setText}
+        text = {text}
+      />
     );
 }
 export default ChatPage;
